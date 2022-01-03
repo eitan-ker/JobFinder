@@ -38,7 +38,7 @@ class DataBase:
             
             for index, row in enumerate(cursor):
                 dbData.append(row)
-                self.IdIndex = index + 1
+                self.IdIndex += 1
             z=2
             return dbData
         except:
