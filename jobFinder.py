@@ -39,10 +39,8 @@ def main():
         print("Searching for jobs...")
         print()
         url = 'https://www.linkedin.com/jobs/search?keywords=' + job_title + '&location=' + location + '&locationId=&geoId=&f_TPR=r86400&position=1&pageNum=0'
-        # url = 'https://www.linkedin.com/jobs/search?keywords=Junior%20Developer&location=Israel&locationId=&geoId=&f_TPR=r86400&position=1&pageNum=0'
         # job page search
         try:
-            # html_text2 = requests.get(url).text
             html_text = urlopen(url, context=ctx).read()
             html_text = html_text.decode("utf-8")
         except Exception as e:
@@ -66,17 +64,32 @@ def main():
             time.sleep(SLEEP_TIME)
             exit(1)
 
-            # if len(jobs) != 0:
-            #     goodSearch = True
-            # else:
-            #     print("The Job Title or Country were not found, Please try again.\n")
+
         try:
+            # dbData list obj.
             dbData = db.readData()
+            # if dbData is empty continue.
+            # else map it by job_id and check for duplicats - append only new jobs.
+            dbListById = []
+            if dbData: 
+                # list is not empty
+                for job in dbData:
+                    #  need only for keays
+                    dbListById.append(cleanText(job[2]))
+            
+
+
 
             for index, job in enumerate(jobs):
                 job_details = []
                 try:
-                    job_id = job['data-search-id']
+                    job_id = job['data-entity-urn'].split(':')[3]
+
+                    # if dbMapByID is not empty check if id already saved in map, if already saved - continue to next iteration.
+                    if len(dbListById) != 0:
+                        if job_id in dbListById:
+                            continue
+
                     companyInfo = job.find('a', class_='hidden-nested-link')
                     company_name = companyInfo.text.replace('\n', '')
                     company_name = cleanText(company_name)
@@ -113,16 +126,15 @@ def main():
                 job_details.append(("job_link", job_link))
                 job_details.append(("company_location", company_location))
 
-                # db.readData()
                 db.insertData(job_details)
-                z=2
 
 
                 
 
 
-
-                
+                #    
+                # -------------- write to files --------------
+                # 
                 # try:
                 #     file_name = job_title +"-"+ company_name+".txt"
                 #     file  = open(file_name, "w+")
@@ -151,6 +163,7 @@ def main():
                 # print(f'job_link: {job_link}')
                 # print(f'company_location: {company_location}')
                 # print()
+
         except Exception as e:
             print("parsing")
             print(e)

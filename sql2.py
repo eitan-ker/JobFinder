@@ -25,7 +25,7 @@ class DataBase:
     # tableName<string>  
     def createTable(self):
         cursor = self.conn.cursor()
-        cursor.execute('Create Table AllData (ID int);')
+        cursor.execute('create table AllJobs (ID int,job_title char(100),job_id char(500),company_name char(50),company_link char(500),job_post_date char(50),job_link char(500),company_location char(500));')
         self.conn.commit()
         self.tableCreated = True
 
@@ -42,8 +42,10 @@ class DataBase:
             z=2
             return dbData
         except:
-            # no data to read
-            return
+            # exception while reading
+            emptyList = []
+            return emptyList
+            
     
 
     # insert only after read all data from db - continue writing by last ID 
@@ -53,6 +55,7 @@ class DataBase:
         cursor.execute('Insert Into AllJobs(ID, job_title, job_id, company_name, company_link, job_post_date, job_link, company_location) Values (?,?,?,?,?,?,?,?);',
         (self.IdIndex, dataList[0][1], dataList[1][1], dataList[2][1], dataList[3][1], dataList[4][1], dataList[5][1], dataList[6][1]))
         self.conn.commit()
+        self.IdIndex += 1
 
     
     # colName<string>  
