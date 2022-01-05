@@ -7,7 +7,7 @@ ctx = ssl.create_default_context()
 ctx.check_hostname = False
 ctx.verify_mode = ssl.CERT_NONE
 from decimal import Decimal
-SLEEP_TIME = 7200
+SLEEP_TIME = 1800
 
 def main():
 
@@ -16,16 +16,20 @@ def main():
           "Job Finder will search for new jobs posted in every time period you specify.\n\n")
     firstSearch = True
 
-    db = DataBase()
-    db.tableExist()
 
     while(True):
+
+
+        # open connection to db    
+        db = DataBase()
+        db.tableExist()
+
         # just in case of a bad input
         if (firstSearch == True):
 
             print("Please write the Job Title you want to look for:")
-            job_title = input('>> ')
-            job_title = generateURLFormat(job_title)
+            job_title_search = input('>> ')
+            job_title_search = generateURLFormat(job_title_search)
 
             # job_title = 'junior%20developer'
 
@@ -38,10 +42,12 @@ def main():
         print()
         print("Searching for jobs...")
         print()
-        url = 'https://www.linkedin.com/jobs/search?keywords=' + job_title + '&location=' + location + '&locationId=&geoId=&f_TPR=r86400&position=1&pageNum=0'
+        url = "https://www.linkedin.com/jobs/search?keywords=" + job_title_search + "&location=" + location + "&locationId=&geoId=&f_TPR=r86400&position=1&pageNum=0"
         # job page search
         try:
-            html_text = urlopen(url, context=ctx).read()
+            url_html = urlopen(url, context=ctx)
+            html_text = url_html.read()
+            url_html.close()
             html_text = html_text.decode("utf-8")
         except Exception as e:
             print("get URL")
