@@ -36,17 +36,30 @@ class DataBase:
         print()
 
 
-    def AllData(self):
+    def sqlReturnAllData(self):
         cursor = self.conn.cursor()
         cursor.execute('Select * From AllJobs')
+        return cursor
+
+    def sqlReturnBy(self, type, search_word):
+        cursor = self.conn.cursor()
+        if type == 2:
+            query = "SELECT * FROM AllJobs WHERE job_title LIKE '%"+search_word+"%';"
+            cursor.execute(query)
+        elif type == 3:
+            query = "SELECT * FROM AllJobs WHERE company_name LIKE '%"+search_word+"%';"
+            cursor.execute(query)
+        elif type == 4:
+            query = "SELECT * FROM AllJobs WHERE location LIKE '%"+search_word+"%';"
+            cursor.execute(query)
         return cursor
 
 
     def readData(self):
         dbData = []
         try:
-            cursor = self.conn.cursor()
-            cursor.execute('Select * From AllJobs')
+
+            cursor = self.sqlreturnAllData()
             
             for index, row in enumerate(cursor):
                 dbData.append(row)

@@ -9,15 +9,14 @@ ctx.verify_mode = ssl.CERT_NONE
 from decimal import Decimal
 SLEEP_TIME = 1800
 
-def main():
-
-    print("\nWelcome to the Linkedin Job Finder console.\n"
-          "All you need to do is to write the Job Title and Country you want to look for, I'll do the rest.\n"
-          "Job Finder will search for new jobs posted in every time period you specify.\n\n")
+def scrape():
+    print()
+    print("All you need to do is to write the Job Title and Country you want to look for, I'll do the rest.\n")
     firstSearch = True
+    stayHere = True
 
 
-    while(True):
+    while(stayHere):
 
 
         # open connection to db    
@@ -83,8 +82,6 @@ def main():
                     #  need only for keays
                     dbListById.append(cleanText(job[2]))
             
-
-
 
             for index, job in enumerate(jobs):
                 job_details = []
@@ -175,9 +172,20 @@ def main():
             print(e)
             time.sleep(SLEEP_TIME)
             exit(1)
-        print(f'Going to sleep for 2 hours')
-        db.closeConn()
-        time.sleep(SLEEP_TIME)
+
+        print("Would you like to Sleep & Repeat or return to Menu?")
+        print("1 - Sleep & Repeat, 0 - Return to Menu")
+        choice = input('>> ')
+        if choice == '1':
+            print(f'Going to sleep for 2 hours')
+            db.closeConn()
+            time.sleep(SLEEP_TIME)
+        elif choice == '0':
+            stayHere = False
+            db.closeConn()
+            
+        
+
 
 def cleanText(unCleanedStr):
     firstIndex = 0
@@ -212,24 +220,55 @@ def generateURLFormat(job_title):
     return jobTitleURL
 
 
-def main2():
+def sqlQuery():
     
     db = DataBase()
     db.tableExist()
-    cursor = db.AllData()
+
+    print("Please Choose The Query:")
+
+    choice = input('>> ')
+
+    # 1 
+    # cursor = db.sqlReturnAllData()
+
+    # 2 - job_title, 3 - company, 4 - location
+    search_word = "junior developer"
+    cursor = db.sqlReturnBy(2 ,search_word)
     db.printData(cursor)
 
-    # db.AllData()                      -V
-    # db.printData()                    -V
-    # --------------------------
-    # db.searchByJobTitle()
-    # db.searchByCompany()
-    # db.searchByLocation()
-    # db.searchNumOfJobsByLocation()
-    # db.searchNumOfJobsByCompany()
+    
 
+
+
+    # 1. db.sqlReturnAllData()                     -V
+    # 2. db.printData()                            -V
+    # 3. db.sqlReturnByJobTitle(job_title)         -V
+    # 4. db.sqlReturnByCompany()                   -V
+    # 5. db.sqlReturnByLocation()                  -V
+    # --------------------------
+    # 
+    # db.sqlReturnByCompany()
+    # db.sqlReturnByLocation()
+    # db.sqlReturnNumOfJobsByLocation()
+    # db.sqlReturnNumOfJobsByCompany()
+
+# Menu
+def main():
+    while(True):
+        print()
+        print("Welcome to the Linkedin Job Finder Menu.")
+        print("Please choose:")
+        print("1. Scrape for new Jobs.")
+        print("2. Run SQL query.")
+        
+        choice = input('>> ')
+
+        if choice == '1':
+            scrape()
+        elif choice== '2':
+            sqlQuery()
 
 
 if __name__ == '__main__':
-    # main()
-    main2()
+    main()
