@@ -212,5 +212,24 @@ def generateURLFormat(job_title):
     return jobTitleURL
 
 
+def main2():
+    
+    db = DataBase()
+    db.tableExist()
+    cursor = db.AllData()
+    db.printData(cursor)
+
+    # db.AllData()                      -V
+    # db.printData()                    -V
+    # --------------------------
+    # db.searchByJobTitle()
+    # db.searchByCompany()
+    # db.searchByLocation()
+    # db.searchNumOfJobsByLocation()
+    # db.searchNumOfJobsByCompany()
+
+
+
 if __name__ == '__main__':
-    main()
+    # main()
+    main2()

@@ -30,6 +30,18 @@ class DataBase:
         self.tableCreated = True
 
 
+    def printData(self, data):
+        for row in data:
+            print(f'row = {row}')
+        print()
+
+
+    def AllData(self):
+        cursor = self.conn.cursor()
+        cursor.execute('Select * From AllJobs')
+        return cursor
+
+
     def readData(self):
         dbData = []
         try:
